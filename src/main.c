@@ -115,6 +115,22 @@ static void register_package_from_url(const char* url) {
     }
 }
 
+void new_project() {
+    FILE* ignore = fopen(".gitignore", "w");
+    if (ignore != NULL) {
+        fprintf(ignore, ".llvm_cache/\n.gravel_cache/\n*.ll\n");
+        fclose(ignore);
+    }
+
+    FILE* libs = fopen("Libs.grvdep", "w");
+    if (libs != NULL) {
+        fclose(libs);
+    }
+
+    CREATE_FOLDER("code");
+    CREATE_FOLDER("libs");
+}
+
 
 int main(int argc, char* argv[]) {
     clock_t start_time = clock();
@@ -130,6 +146,11 @@ int main(int argc, char* argv[]) {
 
     if (hasArg(&ctx, "pyll")) {
         system(strcat("python ", getArg(&ctx, "pyll")));
+    }
+
+    if (hasArg(&ctx, "new")) {
+        new_project();
+        exit(0);
     }
 
     if (hasArg(&ctx, "run")) {
