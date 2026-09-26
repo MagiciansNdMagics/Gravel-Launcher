@@ -18,6 +18,15 @@
     #define PCLOSE pclose
 #endif
 
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+    #include <direct.h>
+    #define CREATE_FOLDER(path) _mkdir(path)
+#else
+    #include <sys/stat.h>
+    #include <sys/types.h>
+    #define CREATE_FOLDER(path) mkdir(path, 0777)
+#endif
+
 static void register_package_from_file(const char* file_path) {
     FILE* file = fopen(file_path, "r");
     if (!file)
@@ -51,7 +60,8 @@ static void register_package_from_file(const char* file_path) {
 }
 
 static void register_package_from_url(const char* url) {
-    char temp_cache[256] = "gravel_cache_temp.tmp";
+    CREATE_FOLDER(".gravel_cache");
+    char temp_cache[256] = ".gravel_cache/gravel_cache_temp.tmp";
     char command[512];
     
     snprintf(command, sizeof(command), "curl -s \"%s\" -o %s", url, temp_cache);
@@ -93,7 +103,7 @@ static void register_package_from_url(const char* url) {
 
     if (name[0] != '\0') {
         char final_cache_path[256];
-        snprintf(final_cache_path, sizeof(final_cache_path), "gravel_cache_%s.grv", name);
+        snprintf(final_cache_path, sizeof(final_cache_path), ".gravel_cache/gravel_cache_%s.grv", name);
 
         remove(final_cache_path);
         rename(temp_cache, final_cache_path);
@@ -104,6 +114,23 @@ static void register_package_from_url(const char* url) {
         remove(temp_cache);
     }
 }
+
+void new_project() {
+    FILE* ignore = fopen(".gitignore", "w");
+    if (ignore != NULL) {
+        fprintf(ignore, ".llvm_cache/\n.gravel_cache/\n*.ll\n");
+        fclose(ignore);
+    }
+
+    FILE* libs = fopen("Libs.grvdep", "w");
+    if (libs != NULL) {
+        fclose(libs);
+    }
+
+    CREATE_FOLDER("code");
+    CREATE_FOLDER("libs");
+}
+
 
 int main(int argc, char* argv[]) {
     clock_t start_time = clock();
@@ -119,6 +146,11 @@ int main(int argc, char* argv[]) {
 
     if (hasArg(&ctx, "pyll")) {
         system(strcat("python ", getArg(&ctx, "pyll")));
+    }
+
+    if (hasArg(&ctx, "new")) {
+        new_project();
+        exit(0);
     }
 
     if (hasArg(&ctx, "run")) {

@@ -227,5 +227,9 @@
 - Add a `char` type
 - Start a Github wiki
 
+## 2026-09-26
+- URL packages get saved at `.gravel_cache/` instead of root 
+- Add `gravel new`
+
 TODO: Add checker, imports and packages to documentation
 KNOWN BUGS: void functions return 0

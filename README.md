@@ -295,6 +295,24 @@ So, `int!?` could be an int, a null, or an exception.
 
 Exceptions are thrown at the end of the scope.
 
+## Create a new project
+_In the root, add `llvm/llvm.py` with the script to run the `.ll` file. If you don't have LLVM installed, you can copy the script on this repository_
+
+To create a base project, run:
+```bash
+gravel new
+```
+
+It will create:
+
+`.gitignore` with Gravel's cache and result files
+
+`code/`
+
+`libs/`
+
+`Libs.grvdep`
+
 ## Compile
 
 ### With your default compiler
