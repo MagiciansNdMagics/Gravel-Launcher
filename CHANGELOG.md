@@ -231,5 +231,8 @@
 - URL packages get saved at `.gravel_cache/` instead of root 
 - Add `gravel new`
 
+## 2026-09-26
+- Add a CL.exe (MSVC) release file and Autopy job for better release executables
+
 TODO: Add checker, imports and packages to documentation
 KNOWN BUGS: void functions return 0
