@@ -1,5 +1,6 @@
 .vscode/
 .llvm_cache/
+.gravel_cache/
 *.exe
 *.ilk
 *.obj
