@@ -85,6 +85,7 @@ static const struct {
     {"impl",      TOKEN_IMPL},
     {"import",    TOKEN_IMPORT},
     {"in",        TOKEN_IN},
+    {"inline",    TOKEN_INLINE},
     {"int",       TOKEN_INT},
     {"namespace", TOKEN_NAMESPACE},
     {"package",   TOKEN_PACKAGE},

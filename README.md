@@ -151,6 +151,16 @@ output:
 aaaaaaaaaa
 ```
 
+### Inline LLVM IR
+
+Write inline LLVM IR!
+
+```
+inline "llvm" 
+    "ret i32 543"
+end
+```
+
 ### Functions
 
 Use the `end` keyword, and use the reserved word `fun`. Define return type after args (optional).
