@@ -1,1 +1,5 @@
-import "math"
+inline "llvm"
+    "%resultado = add i32 10, 5
+    ret i32 %resultado
+    "
+end
