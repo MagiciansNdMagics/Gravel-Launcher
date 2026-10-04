@@ -237,5 +237,8 @@
 ## 2026-10-03
 - Add inline LLVM
 
+## 2026-10-04
+- Update extension for VScode
+
 TODO: Add checker, imports and packages to documentation
 KNOWN BUGS: void functions return 0
