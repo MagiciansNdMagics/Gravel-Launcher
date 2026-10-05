@@ -19,14 +19,6 @@
             "outputSymbol": "-o "  
         },
         {
-            "compiler": "cl-release.bat",
-            "id": "cl-rel",
-            "flags": [],
-            "input": "",
-            "output": "",
-            "outputSymbol": ""
-        },
-        {
             "compiler": "python",
             "id": "test",
             "flags": [
