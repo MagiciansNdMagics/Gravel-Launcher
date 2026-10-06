@@ -1,0 +1,27 @@
+; ModuleID = 'output.ll'
+declare i32 @putchar(i32)
+
+
+define void @cprint(i32 %charasc) {
+entry:
+    %0 = call i32 @putchar(i32 %charasc)
+    ret void
+}
+
+
+define i32 @main() {
+entry:
+    call void @cprint(i32 72)
+    call void @cprint(i32 101)
+    call void @cprint(i32 108)
+    call void @cprint(i32 108)
+    call void @cprint(i32 111)
+    call void @cprint(i32 32)
+    call void @cprint(i32 87)
+    call void @cprint(i32 111)
+    call void @cprint(i32 114)
+    call void @cprint(i32 108)
+    call void @cprint(i32 100)
+    call void @cprint(i32 10)
+    ret i32 0
+}
