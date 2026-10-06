@@ -691,14 +691,6 @@ static char* compile_node(FILE* outf, ASTNode* node, int* register_count) {
             }
             return NULL;
         }
-
-        case NODE_INLINE: {
-            if (strcmp(node->data.inline_code.target, "llvm") == 0) {
-                fputs(node->data.inline_code.code, outf);
-                fputc('\n', outf);
-            }
-            return NULL;
-        }
     }
 
     return NULL;

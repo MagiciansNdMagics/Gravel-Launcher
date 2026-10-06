@@ -62,8 +62,8 @@ typedef enum {
     TOKEN_FOR,
     TOKEN_IN,
     TOKEN_VAR_DEF,  // val
-    TOKEN_CONST,
-    TOKEN_INLINE
+    TOKEN_CONST
+
 } TokenType;
 
 typedef struct {

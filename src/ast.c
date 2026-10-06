@@ -524,7 +524,7 @@ ASTNode* parse_statement(const Token* t, int* c, const char* ns, ARGS_CONTEX* ct
         } else {
             raiseError("Missing ':=' in variable declaration", "E0006");
         }
-
+        
         if (result->data.var_decl.value)
             return result;
 
@@ -912,73 +912,6 @@ ASTNode* parse(const Token* tokens, int count, ARGS_CONTEX* ctx) {
             continue;
         }
 
-        if (current->type == TOKEN_INLINE) {
-            advance(tokens, &current_token); // Consume TOKEN_INLINE
-
-            ASTNode* inlineNode = (ASTNode*)malloc(sizeof(ASTNode));
-            if (!inlineNode)
-                raiseError("Memory allocation failed", "E0004");
-
-            inlineNode->type = NODE_INLINE;
-            inlineNode->data.inline_code.code[0] = '\0';
-
-            // 1. Read target platform/language identifier (e.g. inline c, inline cpp)
-            Token* target_token = peek(tokens, &current_token);
-            if (target_token->type != TOKEN_NAME && target_token->type != TOKEN_QUOTE) {
-                free(inlineNode);
-                raiseError("Expected target specifier after 'inline'", "E0009");
-            }
-            
-            snprintf(inlineNode->data.inline_code.target, 
-                    sizeof(inlineNode->data.inline_code.target), 
-                    "%s", target_token->value);
-            advance(tokens, &current_token); // Consume target specifier token
-
-            // 2. Accumulate tokens into inline code buffer until TOKEN_END or TOKEN_EOF
-            size_t buffer_size = sizeof(inlineNode->data.inline_code.code);
-
-            while (peek(tokens, &current_token)->type != TOKEN_END && 
-                peek(tokens, &current_token)->type != TOKEN_EOF) {
-                
-                Token* tok = peek(tokens, &current_token);
-                size_t current_len = strlen(inlineNode->data.inline_code.code);
-
-                if (current_len < buffer_size - 1) {
-                    // Append token value
-                    snprintf(inlineNode->data.inline_code.code + current_len, 
-                            buffer_size - current_len, 
-                            "%s ", tok->value); 
-                }
-
-                advance(tokens, &current_token); // Move to next token
-            }
-
-            // 3. Consume terminating TOKEN_END
-            if (peek(tokens, &current_token)->type == TOKEN_END) {
-                advance(tokens, &current_token); // Consume TOKEN_END
-            } else {
-                free(inlineNode);
-                raiseError("Unexpected end of file: missing 'end' for inline block", "E0010");
-            }
-
-            // 4. Append node to program_node statements array
-            if (program_node->data.program.count >= statement_capacity) {
-                statement_capacity *= 2;
-                ASTNode** temp = (ASTNode**)realloc(program_node->data.program.statements, 
-                                                    sizeof(ASTNode*) * statement_capacity);
-                if (!temp) {
-                    free(inlineNode);
-                    free(program_node->data.program.statements);
-                    free(program_node);
-                    raiseError("Memory allocation failed while expanding statements", "E0004");
-                }
-                program_node->data.program.statements = temp;
-            }
-
-            program_node->data.program.statements[program_node->data.program.count++] = inlineNode;
-            continue;
-        }
-
         if (current->type == TOKEN_FUN) {
             advance(tokens, &current_token);
             ASTNode* funNode = (ASTNode*)malloc(sizeof(ASTNode));
@@ -1058,8 +991,7 @@ ASTNode* parse(const Token* tokens, int count, ARGS_CONTEX* ctx) {
                 peek(tokens, &current_token)->type == TOKEN_L_FLOAT) {
                 Token* rt = advance(tokens, &current_token);
                 strcpy(funNode->data.fun_def.returnType, rt->value);
-            } else if (peek(tokens, &current_token)->type == TOKEN_INT ||
-                       peek(tokens, &current_token)->type == TOKEN_CHAR) {
+            } else if (peek(tokens, &current_token)->type == TOKEN_INT || peek(tokens, &current_token)->type == TOKEN_CHAR) {
                 advance(tokens, &current_token);
                 strcpy(funNode->data.fun_def.returnType, "int");
             } else if (peek(tokens, &current_token)->type == TOKEN_FLOAT) {
