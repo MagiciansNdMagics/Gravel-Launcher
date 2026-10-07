@@ -1,8 +1,10 @@
 package: random
 
 namespace rand
+	int seed = 1
+	
 	fun initRNG()
-		int seed = 1
+		seed = 1
 	end
 
 	fun randint(int min, int max) int

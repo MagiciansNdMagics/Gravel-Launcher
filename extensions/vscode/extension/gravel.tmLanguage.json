@@ -60,7 +60,7 @@
         },
         {
           "name": "keyword.control.conditional.grv",
-          "match": "\\b(if|elseif|else)\\b"
+          "match": "\\b(if|elseif|else|while|for|repeat|in)\\b"
         },
         {
           "name": "keyword.control.grv",
@@ -68,7 +68,7 @@
         },
         {
           "name": "keyword.declaration.grv",
-          "match": "\\b(fun|val|const|class|import|package|namespace|end|while|for|repeat)\\b"
+          "match": "\\b(fun|val|const|class|import|package|namespace|end|inline)\\b"
         }
       ]
     },
