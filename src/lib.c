@@ -1,9 +1,18 @@
 #include "../include/lib.h"
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdint.h>
 #include "../include/tokens.h"
 #include "../include/launcher.h"
 
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+    #include <process.h>
+#else
+    #include <errno.h>
+    #include <sys/types.h>
+    #include <sys/wait.h>
+    #include <unistd.h>
+#endif
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
     #include <direct.h>
@@ -13,6 +22,28 @@
     #include <sys/types.h>
     #define CREATE_FOLDER(path) mkdir(path, 0777)
 #endif
+
+static intptr_t download_package(const char* url, const char* output_path) {
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+    const char* args[] = {"curl", "-s", "--output", output_path, "--", url, NULL};
+    return _spawnvp(_P_WAIT, "curl", args);
+#else
+    pid_t child = fork();
+    if (child == -1)
+        return -1;
+    if (child == 0) {
+        execlp("curl", "curl", "-s", "--output", output_path, "--", url, (char*)NULL);
+        _exit(127);
+    }
+
+    int status;
+    while (waitpid(child, &status, 0) == -1) {
+        if (errno != EINTR)
+            return -1;
+    }
+    return WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+#endif
+}
 
 static void register_package_from_file(const char* file_path) {
     FILE* file = fopen(file_path, "r");
@@ -49,10 +80,7 @@ static void register_package_from_file(const char* file_path) {
 static void register_package_from_url(const char* url) {
     CREATE_FOLDER(".gravel_cache");
     char temp_cache[256] = ".gravel_cache/gravel_cache_temp.tmp";
-    char command[512];
-    
-    snprintf(command, sizeof(command), "curl -s \"%s\" -o %s", url, temp_cache);
-    int ret = system(command);
+    intptr_t ret = download_package(url, temp_cache);
     if (ret != 0) {
         remove(temp_cache);
         return;
