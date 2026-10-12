@@ -1,0 +1,10 @@
+.vscode/
+.llvm_cache/
+.gravel_cache/
+*.exe
+*.ilk
+*.obj
+*.pbd
+*.pdb
+*.ll
+!llvm.exe
