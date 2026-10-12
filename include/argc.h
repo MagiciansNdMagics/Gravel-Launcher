@@ -15,7 +15,7 @@ typedef struct
     const char* desc;
 } ARGS_data;
 
-bool args_init(int argc, char* argv[]);
+bool args_init(ARGS_CONTEX* ctx, int argc, char *argv[]);
 
 bool hasArg(ARGS_CONTEX* ctx, char* arg);
 

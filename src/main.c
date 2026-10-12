@@ -23,7 +23,9 @@ int main(int argc, char* argv[]) {
 
     _launcherInit();
 
-    if (!args_init(argc, argv))
+    ARGS_CONTEX ctx;
+
+    if (!args_init(&ctx, argc, argv))
     {
         printf("No arguments given or a wrong argument! Use -h for help!\n");
         exit(0);

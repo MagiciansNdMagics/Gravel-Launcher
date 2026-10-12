@@ -32,23 +32,20 @@ help_handle_arg(ARGS_CONTEX* ctx)
     exit(0);
 }
 
-bool args_init(int argc, char *argv[])
+bool args_init(ARGS_CONTEX* ctx, int argc, char *argv[])
 {
-    if (argv == NULL || argc < 0)
-        return false;
-
-    ARGS_CONTEX* ctx = malloc(sizeof(ARGS_CONTEX));
-    if (ctx == NULL)
+    if (argv == NULL || argv == NULL || argc < 0)
         return false;
 
     ctx->argc = argc;
     ctx->argv = argv;
 
-    for (int i = 0; i < argc; i++)
+    // Skip the exec command
+    for (int i = 1; i < argc; i++)
     {
         for (size_t a = 0; a < sizeof(args_list) / sizeof(args_list[0]); a++)
         {
-            if (strcmp(argv[i], args_list[a].name) == 0)
+            if (argv[i] != NULL && strcmp(argv[i], args_list[a].name) == 0)
             {
                 if (args_list[a].function != NULL)
                     args_list[a].function(ctx);

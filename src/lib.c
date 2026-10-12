@@ -130,7 +130,25 @@ winll_handle_arg(ARGS_CONTEX* ctx)
 void
 pyll_handle_arg(ARGS_CONTEX* ctx)
 {
-    system(strcat("python ", getArg(ctx, "pyll")));
+    // Lets hope the file path aint that much longer
+    char command[512];
+    char* file = getArg(ctx, "pyll");
+
+    if (file == NULL)
+    {
+        fprintf(stderr, "Usage: pyll <input file>\n");
+        return;
+    }
+
+    int len = snprintf(command, sizeof(command), "python3 \"%s\"", file);
+
+    if (len < 0 || (size_t)len >= sizeof(command))
+    {
+        fprintf(stderr, "Command too long.\n");
+        return;
+    }
+
+    system(command);
 }
 
 void
