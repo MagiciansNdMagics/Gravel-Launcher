@@ -30,10 +30,7 @@ get_file_contents(const char* file_name)
     FILE* file = fopen(file_name, "r");
 
     if (!file)
-    {
-        raiseError("File does not exist or cannot be read", "E0031");
         return NULL;
-    }
 
     if (fseek(file, 0, SEEK_END) != 0)
     {
@@ -324,30 +321,29 @@ run_handle_arg(ARGS_CONTEX* ctx)
 
     char* cargo_contents = get_file_contents("Libs.grvdep");
 
-    if (!cargo_contents)
+    if (cargo_contents)
     {
-        raiseError("File does not exist or cannot be read", "E0031");
-        return;
-    }
+        char* cargo_contents_line = strtok(cargo_contents, "\r\n");
 
-    // Note that strtok modifies the buffer so dont reuse it.
-    char* cargo_contents_line = strtok(cargo_contents, "\r\n");
-
-    while (cargo_contents_line != NULL)
-    {
-        if (cargo_contents_line[0] != '\0') {
-            printf("val: %s\n", cargo_contents_line);
-            if (!strncmp(cargo_contents_line, "web:", 4)) {
-                register_package_from_url(cargo_contents_line + 4);
-            } else {
-                register_package_from_file(cargo_contents_line);
+        while (cargo_contents_line != NULL)
+        {
+            if (cargo_contents_line[0] != '\0') {
+                if (!strncmp(cargo_contents_line, "web:", 4)) {
+                    register_package_from_url(cargo_contents_line + 4);
+                } else {
+                    register_package_from_file(cargo_contents_line);
+                }
             }
+
+            cargo_contents_line = strtok(NULL, "\r\n");
         }
 
-        cargo_contents_line = strtok(NULL, "\r\n");
+        free(cargo_contents);
     }
-
-    free(cargo_contents);
+    else
+    {
+        printf("Libs.grvdep is missing, it would be highly recomended to create this file, so you can add your own libraries!\n");
+    }
 
     for (int i = 1; i < ctx->argc; i++) {
         if (strcmp(ctx->argv[i], "run") != 0)
